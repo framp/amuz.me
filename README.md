@@ -1,7 +1,8 @@
-#amuz.me
-No frills, instant player and playlist maker
+<img src="http://amuz.me/img/amuz-bunny.png" width="100" />
+
 [amuz.me](http://amuz.me)
-[amuz.me](http://amuz.me/img/amuz-bunny.png)
+
+No frills, instant player and playlist maker
 
 ##Description
 The aim of the project is to have an opensource, sleek YouTube player and playlist maker which lives entirely in the browser.
