@@ -1,0 +1,105 @@
+@import 'config'
+
+  
+.list
+  background-color wetasphalt
+  color clouds
+  overflow hidden
+  margin 1em
+  min-width 16em
+  min-height 25em
+  box-shadow 0 0 boxShadow darken(@background-color,20)
+  
+  ul::-webkit-scrollbar
+    width 0.5em
+  ul::-webkit-scrollbar-thumb
+    background-color clouds
+    border-radius 1em
+  
+  >.header
+    height 0.5em
+    line-height 0.5em
+    background belizehole
+    color white
+    padding-top 0.6em
+    padding-bottom 0.45em
+    width 100%
+    text-align center
+    font-family 'Langdon'
+    font-size 2em
+  
+  label
+    width 2em
+  
+  input
+    outline 0
+    border 0
+    height 2em
+    vertical-align middle
+  
+  ul
+    padding 0
+    margin 0
+    
+  li
+    list-style-type none
+    line-height 2em
+    background-color wetasphalt
+    border-top 0.1em solid midnightblue
+    border-bottom 0.1em solid midnightblue
+    position relative
+    width 100%
+    overflow hidden
+    a
+      text-decoration none
+      color white
+      cursor pointer
+    .entry  
+      display inline-block
+      padding 0.5em
+      padding-right 4em
+      padding-left 0.5em
+    .controls
+      position absolute
+      width 3em
+      right 0
+      top 0
+      text-align center
+      background: darken(wetasphalt,2)
+      height 100%
+      line-height 3em
+    input.entry
+      background clouds
+      color midnightblue
+      font-family Fabrica
+      line-height 2em
+      font-size 1em
+      padding-left 0
+      padding-right 0
+      width 100%
+    .time
+      color silver
+    .time:before 
+      content "\a0("
+    .time:after
+      content ")" 
+  li.message
+    display block
+    width 100%
+    line-height 3em
+    text-align center
+    color silver
+    border-bottom .1em solid #2c3e50
+  
+  li.selected
+    background-color midnightblue
+    color peterriver
+    .controls
+      background: darken(midnightblue,2)
+  
+@media largeQuery
+  .list
+    height 25em
+  .list ul
+    height 20.7em
+    overflow-y auto

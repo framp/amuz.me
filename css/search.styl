@@ -1,0 +1,74 @@
+@import 'config'
+
+#search 
+  .header form
+    padding-left 1.5em
+    padding-right 0.5em
+    margin-top -0.3em
+    >.ui-helper-hidden-accessible
+      display none
+    label
+      vertical-align middle
+    input
+      border-radius 4em
+      padding-left 1em
+      padding-right 1em
+      font-size 0.4em
+      font-family 'Fabrica'
+      width 38%
+      vertical-align middle
+
+  .icon-youtube
+    float left
+    font-size 2em
+    position absolute
+    margin-left 0.2em
+    margin-top 0.3em
+  
+  li 
+    .time
+      position absolute
+      width 3em
+      right 0
+      top 0
+      text-align center
+      background: darken(wetasphalt,2)
+      height 100%
+      line-height 3em
+    .time:before 
+      content ""
+    .time:after
+      content "" 
+  
+#autocomplete
+  .ui-autocomplete
+    max-width 38%
+    height auto
+    z-index 9999
+    font-size 0.4em
+    font-family 'Fabrica'
+    margin-top 0.5em
+    padding-top 0.5em
+    border-radius 0.3em
+    background-color clouds
+    overflow auto
+  .ui-autocomplete::-webkit-scrollbar
+    width 0.5em
+  .ui-autocomplete::-webkit-scrollbar-track
+    background-color clouds
+  .ui-autocomplete::-webkit-scrollbar-thumb
+    background-color wetasphalt
+    border-radius 1em
+  li
+    background-color clouds
+    border 0
+    a
+      color blackish
+      display block
+      width 100%
+  .ui-state-hover,
+  .ui-state-focus,
+  .ui-state-active 
+    background peterriver
+    color white
+    cursor pointer

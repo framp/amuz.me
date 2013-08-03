@@ -1,0 +1,91 @@
+@import 'config'
+  
+body
+  margin 0
+  padding 0
+  background blackish
+  font-family 'Fabrica'
+  color midnightblue
+  -webkit-user-select none
+  -moz-user-select -moz-none
+  -ms-user-select none
+  user-select none
+a
+  cursor pointer
+  
+#ui
+  z-index 5
+  margin auto
+  
+#mobileMask
+  background black
+  opacity 0.9
+  z-index 10
+  position fixed
+  left 0
+  top 0
+  width 100%
+  height 100%
+#mobileMaskMessage
+  width 95%
+  position absolute
+  z-index 15
+  color #fff
+  text-align center
+  margin-left 2.5%
+  margin-right 2.5% 
+  margin-top 8em
+#mobileMaskMessage h2
+  font-family Langdon
+  text-transform uppercase
+  font-size 2em
+  line-height 1.1em
+#mobileMaskMessage p
+  font-size 1em
+  
+.icon-repeat-one:before 
+  content "\f01e \00b9"
+  
+::-webkit-scrollbar
+  width 0.5em
+::-webkit-scrollbar-track
+  background-color wetasphalt
+::-webkit-scrollbar-thumb
+  background-color clouds
+  border-radius 1em
+
+.clear
+  clear both
+  
+.box
+  border-radius boxRadius
+  margin auto
+  margin-top 1em
+  margin-bottom 1em
+@media largeQuery
+  .box
+    margin 1em
+  .box, .verticalContainer
+    float left
+
+.verticalContainer
+  width 18em
+  margin auto
+  
+#youtubePlayerBackgroundMask, #youtubePlayerBackground
+  position fixed
+  top 0 
+  left 0
+  width 100%
+  height 100%
+  z-index -10
+#youtubePlayerBackgroundMask
+  z-index -5
+  
+#playlist
+  display none
+@media largeQuery
+  #playlistResponsive
+    display none
+  #playlist
+    display block

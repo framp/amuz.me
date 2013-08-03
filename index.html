@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html ng-app="amuz" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>amuz.me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="amuz.me" />
+  <meta name="description" content="No frills, instant player and playlist maker" />
+  <meta name="author" content="Federico Rampazzo">
+  <link rel="image_src" href="/img/apple-touch-icon-57x57-precomposed.png" />
+  <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/apple-touch-icon-144x144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/apple-touch-icon-114x114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/apple-touch-icon-72x72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/img/apple-touch-icon-57x57-precomposed.png">
+  
+  <link href="css/main.css" rel="stylesheet">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+</head>
+<body ng-controller="PlayerController">
+<div id="youtubePlayerBackgroundMask"></div>
+<div id="youtubePlayerBackground"></div>
+<div id="mobileMask" ng-show="mobileDetected && !mobileRoutineCompleted"></div>
+<div id="mobileMaskMessage" ng-show="mobileDetected && !mobileRoutineCompleted">
+  <h2>{{i18n('Bummer!')}}<br />{{i18n('Looks like you\'re on mobile!')}}</h2>
+  <p>{{i18n('Due to boring restrictions you have to click on the YouTube button down there before rocking.')}}</p>
+</div>
+<header>
+  <form method="POST" action="" ng-submit="save()" style="display:none;">
+    <input type="text" ng-model="playlistProperties.name" />
+    <button type="submit">Save</button>
+  </form>
+  <a target="_blank" href="{{paypal}}" id="donate" class="icon-coffee"><span>SUPPORT</span></a>
+  <img src="/img/amuz-bunny.png" ng-click="load()" />
+  <div id="amuz">AmUZ.mE</div>
+  <div class="clear"></div>
+</header>
+<div id="ui" style="width: {{uiWidth()}};">
+  <div id="playlist" class="list box" style="width: {{columnWidth()}};">
+    <div class="header">{{i18n('PLAYLIST')}}</div>
+    <ul ui-sortable="sortableOptions" ng:model="playlist">
+      <li ng-repeat="index in playlist" ng-class="{selected: index==currentPlaying}">
+        <a class="entry" ng-click="play(index)" ng-hide="currentEditing(index)">
+          {{items[index].title}}
+          <span class="time">{{items[index].duration | youtubeTime }}</span>
+        </a>
+        <form method="post" action="" ng-submit="hideEditForm(index)" ng-show="currentEditing(index)">
+          <input type="text" ng-model="items[index].title" class="entry" />
+        </form>
+        <span class="controls">
+          <a class="icon-edit" ng-click="showEditForm(index)" ng-hide="currentEditing(index)"></a>
+          <a class="icon-ok" ng-click="hideEditForm(index)" ng-show="currentEditing(index)" ></a>
+          <a class="icon-remove" ng-click="delete(index)"></a>
+        </span>
+      </li>
+      <li class="message" ng-hide="playlist.length>0">{{i18n('Add some songs!')}}</li>
+    </ul>
+  </div>
+  
+  <div class="verticalContainer" >
+    <div id="player" class="box">
+      <div id="repeat" ng-click="toggleRepeat()" ng-class="'icon-'+repeat"></div>
+      <div id="volumeTrack"></div>
+      <div id="volumeThumb" style="right: {{volumeThumb.right*4}}em; top: {{volumeThumb.top*4}}em;"></div>
+      <div id="volume" ng-mousedown="enableVolumeSlider($event)" ng-mouseup="disableVolumeSlider()" ng-mouseleave="disableVolumeSlider()" ng-mousemove="setVolume($event)" ng-class="{'icon-volume-off': volume==0, 'icon-volume-down': volume>0 && volume<=50, 'icon-volume-up': volume>50}"></div>
+      <div id="control" ng-click="control()" ng-class="{'icon-pause': playing, 'icon-play': !playing}"></div>
+      <div id="prev" ng-click="prev()" class="icon-step-backward"></div>
+      <div id="next" ng-click="next()" class="icon-step-forward"></div>
+    </div>
+    
+    <div id="info" class="box">
+      <div id="progress" ng-mousedown="enablePositionSlider($event)" ng-mouseup="disablePositionSlider()" ng-mouseleave="disablePositionSlider()" ng-mousemove="setPosition($event)"><div id="progress-handle" style="width: {{items[currentPlaying].position()*100/items[currentPlaying].duration || 0}}%"></div></div>
+      <div class="container">
+        <!--<a id="youtubeMask" target="_blank" href="http://www.youtube.com/watch?v={{items[currentPlaying].id}}"></a>-->
+        <div id="youtubePlayer"></div>
+        <div id="position">{{items[currentPlaying].position() | youtubeTime}} &nbsp;/</div>
+      </div>
+      <a target="_blank" href="{{{true: 'http://www.youtube.com/watch?v=' + items[currentPlaying].id, false: 'http://amuz.me'}[!!items[currentPlaying].title]}}" id="title">{{items[currentPlaying].title || i18n('amuz.me rocks!')}}</a>
+      <div id="social">
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Famuz.me%2F%23{{items[currentPlaying].id}}" class="icon-facebook"></a>
+        <a target="_blank" href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Famuz.me&text={{escape(items[currentPlaying].title)}}tw_p=tweetbutton&url=http%3A%2F%2Famuz.me%2F%23{{items[currentPlaying].id}}" class="icon-twitter"></a>
+        <a target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Famuz.me%2F%23{{items[currentPlaying].id}}" class="icon-google-plus"></a>
+        
+      </div>
+      <div id="time">{{items[currentPlaying].duration | youtubeTime}}</div>
+    </div>
+  </div>
+  
+  <div id="playlistResponsive" class="list box" style="width: {{columnWidth()}};">
+    <div class="header">{{i18n('PLAYLIST')}}</div>
+    <ul ui-sortable="sortableOptions" ng:model="playlist">
+      <li ng-repeat="index in playlist" ng-class="{selected: index==currentPlaying}">
+        <a class="entry" ng-click="play(index)" ng-hide="currentEditing(index)">
+          {{items[index].title}}
+          <span class="time">{{items[index].duration | youtubeTime }}</span>
+        </a>
+        <form method="post" action="" ng-submit="hideEditForm(index)" ng-show="currentEditing(index)">
+          <input type="text" ng-model="items[index].title" class="entry" />
+        </form>
+        <span class="controls">
+          <a class="icon-edit" ng-click="showEditForm(index)" ng-hide="currentEditing(index)"></a>
+          <a class="icon-ok" ng-click="hideEditForm(index)" ng-show="currentEditing(index)" ></a>
+          <a class="icon-remove" ng-click="delete(index)"></a>
+        </span>
+      </li>
+      <li class="message" ng-hide="playlist.length>0">{{i18n('Add some songs!')}}</li>
+    </ul>
+  </div>
+  
+  <div id="search" class="search list box" ng-controller="SearchController" style="width: {{columnWidth()}};">
+    <i class="icon-youtube"></i>
+    <div class="header">
+      <form method="post" action="" ng-submit="submit()">
+        <label for="searchInput">SEARCH</label>
+        <input type="text" name="search" id="searchInput" ng-model="query" ui-autocomplete="youtubeAutoComplete" />
+      </form>
+      <div id="autocomplete"></div>
+    </div>
+    <ul>
+      <li ng-repeat="entry in results">
+        <a class="entry" ng-click="add($index, entry)">{{entry.title}}</a>
+        <span class="time">{{entry.duration | youtubeTime }}</span>
+      </li>
+      <li class="message" ng-show="moreVisibility"><a ng-click="more()"><i class="icon-plus icon-large"></i></a></li>
+      <li class="message" ng-show="message">{{message}}</li>
+      <li class="message" ng-hide="results.length>0">{{i18n('Search something!')}}</li>
+    </ul>
+  </div>
+  <div class="clear"></div>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>
