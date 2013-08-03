@@ -1,4 +1,4 @@
-/*! amuz.me 04-08-2013 12:08:31 */
+/*! amuz.me 04-08-2013 01:08:02 */
 "use strict";
 
 function PlayerController(a, b, c, d, e) {
@@ -113,7 +113,7 @@ function SearchController(a, b) {
         var d = function() {
             a.message = "No " + (c ? "more " : "") + "items found", a.moreVisibility = !1, a.results = [];
         };
-        a.category = "Music", b.jsonp("http://gdata.youtube.com/feeds/api/videos?q=" + escape(a.query || "") + "&v=2&alt=json" + (a.category ? "&category=" + a.category : "") + "&max-results=" + a.maxResults + "&start-index=" + ((a.currentPage - 1) * a.maxResults + 1) + "&callback=JSON_CALLBACK").success(function(b) {
+        b.jsonp("http://gdata.youtube.com/feeds/api/videos?q=" + escape(a.query || "") + "&v=2&alt=json" + (a.category ? "&category=" + a.category : "") + "&max-results=" + a.maxResults + "&start-index=" + ((a.currentPage - 1) * a.maxResults + 1) + "&callback=JSON_CALLBACK").success(function(b) {
             return b && b.feed && b.feed.entry ? (a.message = "", a.moreVisibility = !0, c || (a.results = []), 
             a.results = a.results.concat(b.feed.entry.map(function(a) {
                 return {
@@ -147,118 +147,7 @@ function SearchController(a, b) {
     });
 }
 
-(function(a, b) {
-    function c(a, c) {
-        d.addType(a, function(f, g, h) {
-            var i, j, k, l, m = g, n = new Date().getTime();
-            if (!f) {
-                m = {}, l = [], k = 0;
-                try {
-                    for (f = c.length; f = c.key(k++); ) e.test(f) && (j = JSON.parse(c.getItem(f)), 
-                    j.expires && j.expires <= n ? l.push(f) : m[f.replace(e, "")] = j.data);
-                    for (;f = l.pop(); ) c.removeItem(f);
-                } catch (o) {}
-                return m;
-            }
-            if (f = "__amplify__" + f, g === b) {
-                if (i = c.getItem(f), j = i ? JSON.parse(i) : {
-                    expires: -1
-                }, !(j.expires && j.expires <= n)) return j.data;
-                c.removeItem(f);
-            } else if (null === g) c.removeItem(f); else {
-                j = JSON.stringify({
-                    data: g,
-                    expires: h.expires ? n + h.expires : null
-                });
-                try {
-                    c.setItem(f, j);
-                } catch (o) {
-                    d[a]();
-                    try {
-                        c.setItem(f, j);
-                    } catch (o) {
-                        throw d.error();
-                    }
-                }
-            }
-            return m;
-        });
-    }
-    var d = a.store = function(a, b, c, e) {
-        var e = d.type;
-        return c && c.type && c.type in d.types && (e = c.type), d.types[e](a, b, c || {});
-    };
-    d.types = {}, d.type = null, d.addType = function(a, b) {
-        d.type || (d.type = a), d.types[a] = b, d[a] = function(b, c, e) {
-            return e = e || {}, e.type = a, d(b, c, e);
-        };
-    }, d.error = function() {
-        return "amplify.store quota exceeded";
-    };
-    var e = /^__amplify__/;
-    for (var f in {
-        localStorage: 1,
-        sessionStorage: 1
-    }) try {
-        window[f].getItem && c(f, window[f]);
-    } catch (g) {}
-    if (window.globalStorage) try {
-        c("globalStorage", window.globalStorage[window.location.hostname]), "sessionStorage" === d.type && (d.type = "globalStorage");
-    } catch (g) {}
-    (function() {
-        if (!d.types.localStorage) {
-            var a = document.createElement("div"), c = "amplify";
-            a.style.display = "none", document.getElementsByTagName("head")[0].appendChild(a);
-            try {
-                a.addBehavior("#default#userdata"), a.load(c);
-            } catch (e) {
-                return a.parentNode.removeChild(a), void 0;
-            }
-            d.addType("userData", function(e, f, g) {
-                a.load(c);
-                var h, i, j, k, l, m = f, n = new Date().getTime();
-                if (!e) {
-                    for (m = {}, l = [], k = 0; h = a.XMLDocument.documentElement.attributes[k++]; ) i = JSON.parse(h.value), 
-                    i.expires && i.expires <= n ? l.push(h.name) : m[h.name] = i.data;
-                    for (;e = l.pop(); ) a.removeAttribute(e);
-                    return a.save(c), m;
-                }
-                if (e = e.replace(/[^-._0-9A-Za-z\xb7\xc0-\xd6\xd8-\xf6\xf8-\u037d\u37f-\u1fff\u200c-\u200d\u203f\u2040\u2070-\u218f]/g, "-"), 
-                f === b) {
-                    if (h = a.getAttribute(e), i = h ? JSON.parse(h) : {
-                        expires: -1
-                    }, !(i.expires && i.expires <= n)) return i.data;
-                    a.removeAttribute(e);
-                } else null === f ? a.removeAttribute(e) : (j = a.getAttribute(e), i = JSON.stringify({
-                    data: f,
-                    expires: g.expires ? n + g.expires : null
-                }), a.setAttribute(e, i));
-                try {
-                    a.save(c);
-                } catch (o) {
-                    null === j ? a.removeAttribute(e) : a.setAttribute(e, j), d.userData();
-                    try {
-                        a.setAttribute(e, i), a.save(c);
-                    } catch (o) {
-                        throw null === j ? a.removeAttribute(e) : a.setAttribute(e, j), d.error();
-                    }
-                }
-                return m;
-            });
-        }
-    })(), function() {
-        function a(a) {
-            return a === b ? b : JSON.parse(JSON.stringify(a));
-        }
-        var c = {}, e = {};
-        d.addType("memory", function(d, f, g) {
-            return d ? f === b ? a(c[d]) : (e[d] && (clearTimeout(e[d]), delete e[d]), null === f ? (delete c[d], 
-            null) : (c[d] = f, g.expires && (e[d] = setTimeout(function() {
-                delete c[d], delete e[d];
-            }, g.expires)), f)) : a(c);
-        });
-    }();
-})(this.amplify = this.amplify || {}), Array.prototype.map || (Array.prototype.map = function(a, b) {
+Array.prototype.map || (Array.prototype.map = function(a, b) {
     var c, d, e;
     if (null == this) throw new TypeError(" this is null or not defined");
     var f = Object(this), g = f.length >>> 0;

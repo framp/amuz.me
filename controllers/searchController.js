@@ -5,7 +5,7 @@ function SearchController($scope, $http) {
       $scope.moreVisibility = false;
       $scope.results = [];
     };
-    $scope.category = 'Music';
+    //$scope.category = 'Music';
     $http.jsonp('http://gdata.youtube.com/feeds/api/videos?q=' + escape($scope.query || "") + 
                 '&v=2&alt=json' + 
                 ($scope.category ? '&category=' + $scope.category : '') + 
