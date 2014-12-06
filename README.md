@@ -1,4 +1,4 @@
-<img src="http://amuz.me/img/amuz-bunny.png" width="100" />
+<img src="http://framp.me/amuz.me/img/amuz-bunny.png" width="100" />
 
 [amuz.me](http://amuz.me)
 
